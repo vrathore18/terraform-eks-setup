@@ -1,17 +1,12 @@
-resource "null_resource" "setup_kubernetes_metric_server" {
+resource "helm_release" "metrics-server" {
+  name       = "metrics-server"
   depends_on = [module.eks]
 
-  triggers = {
-    kubernetes_dashboard_manifest = filesha1("kubernetes-manifests/kubernetes-metric-server.yaml")
+  namespace = "kube-system"
+  chart     = "${path.module}/charts/metrics-server"
+  lifecycle {
+    ignore_changes = [chart]
   }
 
-  provisioner "local-exec" {
-    working_dir = path.module
-
-    command = <<EOS
-kubectl apply -f kubernetes-manifests/kubernetes-metric-server.yaml --kubeconfig .kube_config.yaml
-EOS
-
-  }
+  recreate_pods = "true"
 }
-

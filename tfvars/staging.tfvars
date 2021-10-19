@@ -7,5 +7,5 @@ azs = ["eu-west-2a","eu-west-2b","eu-west-2c"]
 public_subnets = ["11.2.0.0/26","11.2.0.128/26"]
 private_subnets = ["11.2.0.192/26","11.2.0.64/26"]
 eks_instance_type = "t3.xlarge"
-cluster_version = "1.21"
+cluster_version = "1.20"
 

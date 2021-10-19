@@ -45,4 +45,18 @@ elif [ "${process}" == "apply" ] && [ "${env}" == "staging" ]; then
         -var backend_config_tfstate_file_key=${BACKEND_CONFIG_TFSTATE_FILE_KEY} \
         -var name=${env} \
         -var-file=tfvars/${env}.tfvars
+elif [ "${process}" == "destroy" ] && [ "${env}" == "staging" ]; then
+    terraform init -reconfigure \
+        -backend-config "region=${BACKEND_CONFIG_BUCKET_REGION}" \
+        -backend-config "bucket=${BACKEND_CONFIG_BUCKET}" \
+        -backend-config "key=${env}/${BACKEND_CONFIG_TFSTATE_FILE_KEY}" \
+        -backend-config "role_arn=${BACKEND_CONFIG_ROLE_ARN}"
+
+    terraform destroy  -auto-approve \
+        -var backend_config_bucket_region=${BACKEND_CONFIG_BUCKET_REGION} \
+        -var backend_config_bucket=${BACKEND_CONFIG_BUCKET} \
+        -var backend_config_role_arn=${BACKEND_CONFIG_ROLE_ARN} \
+        -var backend_config_tfstate_file_key=${BACKEND_CONFIG_TFSTATE_FILE_KEY} \
+        -var name=${env} \
+        -var-file=tfvars/${env}.tfvars
 fi
